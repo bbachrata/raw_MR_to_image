@@ -1,4 +1,4 @@
-function InData = FFTOfMRIData_bb(InData,ConjFlag,ApplyAlongDims,Ifft_flag)
+function InData = FFTOfMRIData(InData,ConjFlag,ApplyAlongDims,Ifft_flag)
 %
 % read_csi_dat Read in csi-data from Siemens raw file format
 %

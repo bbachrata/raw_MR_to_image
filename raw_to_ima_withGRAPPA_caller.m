@@ -11,27 +11,33 @@
 clear
 close all;
 
+
+%%%%%  Set your path to the files %%%%%%
+your_reco_path = '';
+
+
+% Optional outputs
 save_steps = true;
 save_uncomb = false; 
 
-addpath(genpath('/ceph/mri.meduniwien.ac.at/projects/radiology/fmri/data/bbachrata/matlab'))
+
+% Initiliaze
+kspace_prescan_path = '';
 
 
 %% Define data paths and acquisition orientation
 for scan = 1
            
+    useGrappaPrescan = false;
     orient = 3; % 1-sag, 2-trans, 3-cor
     PE_dir = 3; % 1 = HF, 2 = AP, 3 = RL
-    deleteSeparateEchoes = true;
-    useGrappaPrescan = false;
     
     switch scan             
         case 1
-            output_dir = '/ceph/mri.meduniwien.ac.at/projects/radiology/fmri/data/bbachrata/analysis/QSM_SMM/p_bb_20210107_phase/grappa/192/iPat3_nopf';
-            kspace_aliased_path = '/ceph/mri.meduniwien.ac.at/projects/radiology/acqdata/data/BB_sorting_spot/p_bb_20210107_phase/dats/meas_MID00299_FID31532_gre_iPat3_noPF_192.dat';
-            kspace_prescan_path = '/ceph/mri.meduniwien.ac.at/projects/radiology/acqdata/data/BB_sorting_spot/p_bb_20210107_phase/dats/meas_MID00332_FID31565_gre_noPat_noPF_112.dat';
-            orient = 2; 
-            PE_dir = 3;                
+            output_dir = fullfile(your_reco_path,'SMURF/reco/test_data_output/conventional_3D_iPat3');
+            kspace_aliased_path = fullfile(your_reco_path,'SMURF/reco/test_data/conventional_3D_iPat3/meas_MID00049_FID52317_gre_iPat3_3echoes.dat');
+            kspace_prescan_path = fullfile(your_reco_path,'SMURF/reco/test_data/conventional_3D_iPat3/meas_MID00041_FID52309_3D_prescan.dat');
+
     end  
     
     
@@ -101,10 +107,11 @@ for scan = 1
 
             
             %% GRAPPA unaliasing
-            [kspace_unaliased,weights_grappa,kernelsize,SrcRelativeTarg] = opencaipirinha_MRSI_bb(kspace_aliased, kspace_prescan, params.is2D, expandPattern);
+            [kspace_unaliased,weights_grappa,kernelsize,SrcRelativeTarg] = opencaipirinha_MRSI(kspace_aliased, kspace_prescan, params.is2D, expandPattern);
             clear kspace_prescan
             
-            % Save unaliased image
+
+            %% Save unaliased image
             save_nii_from_kspace_separateecho(kspace_unaliased, output_dir, 'unaliased', saveEcho, params);
             if (save_uncomb)
                 save_nii_from_kspace_uncomb_separateecho(kspace_unaliased, output_dir, 'unaliased_uncomb', saveEcho, params);
@@ -135,10 +142,17 @@ for scan = 1
             kspace_aliased = expandKSpaceByIPat(kspace_aliased, params, expandPattern);
 
 
+            %% Save the aliased image and prescan
+            if (save_steps)
+                save_nii_from_kspace_separateecho(kspace_aliased, output_dir, 'Aliased', saveEcho, params);
+            end
+
+
             %% GRAPPA unaliasing
-            kspace_unaliased = opencaipirinha_MRSI_bb(kspace_aliased, weights_grappa, params.is2D, expandPattern, kernelsize, SrcRelativeTarg);
+            kspace_unaliased = opencaipirinha_MRSI(kspace_aliased, weights_grappa, params.is2D, expandPattern, kernelsize, SrcRelativeTarg);
             
-            % Save unaliased image
+
+            %% Save unaliased image
             save_nii_from_kspace_separateecho(kspace_unaliased, output_dir, 'unaliased', saveEcho, params);
             if (save_uncomb)
                 save_nii_from_kspace_uncomb_separateecho(kspace_unaliased, output_dir, 'unaliased_uncomb', saveEcho, params);
@@ -146,13 +160,9 @@ for scan = 1
             clear kspace_unaliased
             
         end
-        
+
     end
-    
-    
-%     %% Merge echoes and delete the individual echo images if desired
-%     mergeEchoesOfNifti(output_dir, 'unaliased', iEcho, deleteSeparateEchoes);
-    
+
 end
 
 

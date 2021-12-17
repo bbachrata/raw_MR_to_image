@@ -1,4 +1,4 @@
-function [TE, is2D, CaipiOffsetCorr, T1WeightFactor, T2sWeightFactor, type1PixelShift, type2PhaseOffset, isTurbo] = getAcqParams(path, rBW, T1_w, T1_f, T2_w, T2_f)
+function [TE, is2D, CaipiOffsetCorr, T1WeightFactor, type1PixelShift, type2PhaseOffset, isTurbo] = getAcqParams(path, rBW, T1_w, T1_f)
 % BB: Get the acquistion parameters and correction factors required for further processing
         
     % Load data
@@ -46,17 +46,6 @@ function [TE, is2D, CaipiOffsetCorr, T1WeightFactor, T2sWeightFactor, type1Pixel
     M_f = (sin(FAr_f)*(1-exp(-TR/T1_f)))/(1-cos(FAr_f)*exp(-TR/T1_f));
 
     T1WeightFactor = M_f/M_w;
-    
-
-    %% Get T2 Corr factor
-    if((~exist('T2_w','var')) || (~exist('T2_f','var')) || (T2_f == 0) || (T2_w == 0))
-        T2sWeightFactor = 0;
-    else
-        M_w = exp(-TE/T2_w);
-        M_f = exp(-TE/T2_f);
-
-        T2sWeightFactor = M_f./M_w;
-    end
     
     
     %% Get Type 1 chemical shift displacement correction

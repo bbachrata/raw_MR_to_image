@@ -1,4 +1,4 @@
-function [kspace_water,kspace_fat,weights,OutData]=openslicecaipirinha_MRSI_bb(InData, ACS_or_weights, is2D, AliasedSlices, quiet_flag, precision, kernelsize) 
+function [kspace_water,kspace_fat,weights,OutData]=openslicecaipirinha_MRSI(InData, ACS_or_weights, is2D, AliasedSlices, quiet_flag, precision, kernelsize) 
 
 % 
 % openslicegrappa_MRSI Reconstruct the Slices of MRSI and MRI Data Ehen Only the Sum of Those Slices Was Measured.
@@ -151,7 +151,7 @@ end
 
  % BB added
 if (is2D == 0)
-    InData = FFTOfMRIData_bb(InData,0,[4],1);
+    InData = FFTOfMRIData(InData,0,[4],1);
 end 
 
 
@@ -166,7 +166,7 @@ if(~exist('weights','var'))
     
      % BB added
     if (is2D == 0)
-        ACS = FFTOfMRIData_bb(ACS,0,[4],1);
+        ACS = FFTOfMRIData(ACS,0,[4],1);
     end 
 
     % Fancy Text Message
@@ -336,8 +336,8 @@ kspace_fat = OutData(:,:,:,(size(OutData,4)/2+1):end);
 
 
 if (is2D == 0)
-     kspace_water = FFTOfMRIData_bb(kspace_water,0,[4],0);
-     kspace_fat = FFTOfMRIData_bb(kspace_fat,0,[4],0);
+     kspace_water = FFTOfMRIData(kspace_water,0,[4],0);
+     kspace_fat = FFTOfMRIData(kspace_fat,0,[4],0);
 end 
 
 

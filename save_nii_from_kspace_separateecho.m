@@ -3,9 +3,9 @@ function save_nii_from_kspace_separateecho(kspace, dir, name, iEcho, params)
 
     % Fourier transform the data from k-space to image
     if (params.is2D)
-        ima = FFTOfMRIData_bb(kspace,0,[2 3],1); 
+        ima = FFTOfMRIData(kspace,0,[2 3],1); 
     else
-        ima = FFTOfMRIData_bb(kspace,0,[2 3 4],1);
+        ima = FFTOfMRIData(kspace,0,[2 3 4],1);
     end
 
     % Do root sum-of-squares coild combination

@@ -6,9 +6,9 @@ end
 
 
 if (params.is2D == 1)
-    ima = FFTOfMRIData_bb(kspace,0,[2 3],1); 
+    ima = FFTOfMRIData(kspace,0,[2 3],1); 
 else
-    ima = FFTOfMRIData_bb(kspace,0,[2 3 4],1);
+    ima = FFTOfMRIData(kspace,0,[2 3 4],1);
 end
 
 ima = ima(:,(size(ima,2)*0.25 + 1):(size(ima,2)*0.75),:,:);

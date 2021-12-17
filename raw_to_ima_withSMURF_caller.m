@@ -7,60 +7,47 @@
 % Instead of separate prescan, ACS data of GRAPPA acquisition can be used (if the number of slices is equal) slices 
 
 % For generation of chemical shift artefacts-free fat-water images, please
-% run correctChemicalShiftAndRelaxationEffects.m afterwards
+% run correct_CSA_recombine_caller.m afterwards
 
 
 %% Housekeeping & Definitions
 clear;
 close all;
 
+
+%%%%%  Set your path to the files %%%%%%
+your_reco_path = '';
+
+
+% Optional outputs
 save_steps = true;
 save_uncomb = true; % required for fat-water recombination 
 
-addpath(genpath('/ceph/mri.meduniwien.ac.at/projects/radiology/fmri/data/bbachrata/matlab'))
+% Initiliaze
+kspace_prescan_path = '';
 
 
 %% Define data paths and acquisition orientation
-for scan = 7
+for scan = 1
             
     orient = 3; % 1-sag, 2-trans, 3-cor
     PE_dir = 3; % 1 = HF, 2 = AP, 3 = RL
     useGrappaPrescan = false;
-    deleteSeparateEchoes = true;
-    kspace_prescan_path = '';
-    
+   
     switch scan  
-        
         case 1
-            output_dir = '/ceph/mri.meduniwien.ac.at/projects/radiology/fmri/data/bbachrata/analysis/SMM/p_bb_20211206_baconDatsToShare/2D_iPat2';
-            kspace_aliased_path = '/ceph/mri.meduniwien.ac.at/projects/radiology/acqdata/data/BB_sorting_spot/p_bb_20211206_baconDatsToShare/dats/meas_MID00083_FID84515_bb_caipigre_2D_Grappa2.dat';
-            kspace_prescan_path = '/ceph/mri.meduniwien.ac.at/projects/radiology/acqdata/data/BB_sorting_spot/p_bb_20211206_baconDatsToShare/dats/meas_MID00084_FID84516_bb_caipigre_2D_prescan.dat';
+            output_dir = fullfile(your_reco_path,'SMURF/reco/test_data_output/SMURF_2D_iPat2/');
+            kspace_aliased_path = fullfile(your_reco_path,'SMURF/reco/test_data/SMURF_2D_iPat2/meas_MID00083_FID84515_bb_smurfgre_2D_iPat2.dat');
+            kspace_prescan_path = fullfile(your_reco_path,'SMURF/reco/test_data/SMURF_2D_iPat2/meas_MID00084_FID84516_2D_prescan.dat');
         case 2
-            output_dir = '/ceph/mri.meduniwien.ac.at/projects/radiology/fmri/data/bbachrata/analysis/SMM/p_bb_20211206_baconDatsToShare/nonSel3D_iPat3/';
-            kspace_aliased_path = '/ceph/mri.meduniwien.ac.at/projects/radiology/acqdata/data/BB_sorting_spot/p_bb_20211206_baconDatsToShare/dats/meas_MID00088_FID84520_bb_caipigre_3D_Grappa3.dat';
-            kspace_prescan_path = '/ceph/mri.meduniwien.ac.at/projects/radiology/acqdata/data/BB_sorting_spot/p_bb_20211206_baconDatsToShare/dats/meas_MID00089_FID84521_bb_caipigre_3D_prescan.dat';
-         case 3
-            output_dir = '/ceph/mri.meduniwien.ac.at/projects/radiology/fmri/data/bbachrata/analysis/SMM/p_bb_20211206_baconDatsToShare/slabSel3D_phasePF/';
-            kspace_aliased_path = '/ceph/mri.meduniwien.ac.at/projects/radiology/acqdata/data/BB_sorting_spot/p_bb_20211206_baconDatsToShare/dats/meas_MID00085_FID84517_bb_caipigre_slabSel3D_phasePF.dat';
-            kspace_prescan_path = '/ceph/mri.meduniwien.ac.at/projects/radiology/acqdata/data/BB_sorting_spot/p_bb_20211206_baconDatsToShare/dats/meas_MID00087_FID84519_bb_caipigre_slabSel3D_prescan.dat';
-        case 4
-            output_dir = '/ceph/mri.meduniwien.ac.at/projects/radiology/fmri/data/bbachrata/analysis/SMM/p_bb_20211206_baconDatsToShare/slabSel3D_phasePF_slicePF/';
-            kspace_aliased_path = '/ceph/mri.meduniwien.ac.at/projects/radiology/acqdata/data/BB_sorting_spot/p_bb_20211206_baconDatsToShare/dats/meas_MID00086_FID84518_bb_caipigre_slabSel3D_phasePF_slicePF.dat';
-            kspace_prescan_path = '/ceph/mri.meduniwien.ac.at/projects/radiology/acqdata/data/BB_sorting_spot/p_bb_20211206_baconDatsToShare/dats/meas_MID00087_FID84519_bb_caipigre_slabSel3D_prescan.dat';
-        case 5
-            output_dir = '/ceph/mri.meduniwien.ac.at/projects/radiology/fmri/data/bbachrata/analysis/SMM/p_bb_20211206_baconDatsToShare/2D_iPat2_ACS/';
-            kspace_aliased_path = '/ceph/mri.meduniwien.ac.at/projects/radiology/acqdata/data/BB_sorting_spot/p_bb_20211206_baconDatsToShare/dats/meas_MID00083_FID84515_bb_caipigre_2D_Grappa2.dat';
+            output_dir = fullfile(your_reco_path,'SMURF/reco/test_data_output/SMURF_nonSel3D_iPat3/');
+            kspace_aliased_path = fullfile(your_reco_path,'SMURF/reco/test_data/SMURF_nonSel3D_iPat3/meas_MID00088_FID84520_bb_smurfgre_3D_iPat3.dat');
+            kspace_prescan_path = fullfile(your_reco_path,'SMURF/reco/test_data/SMURF_nonSel3D_iPat3/meas_MID00089_FID84521_3D_prescan.dat');
+        case 3
+            output_dir = fullfile(your_reco_path,'SMURF/reco/test_data_output/SMURF_2D_iPat2_ACS/');
+            kspace_aliased_path = fullfile(your_reco_path,'SMURF/reco/test_data/SMURF_2D_iPat2/meas_MID00083_FID84515_bb_smurfgre_2D_iPat2.dat');
             useGrappaPrescan = true;
-        case 6
-            output_dir = '/ceph/mri.meduniwien.ac.at/projects/radiology/fmri/data/bbachrata/analysis/SMM/p_bb_20211206_baconDatsToShare/nonSel3D_iPat3/';
-            kspace_aliased_path = '/ceph/mri.meduniwien.ac.at/projects/radiology/acqdata/data/BB_sorting_spot/p_bb_20211206_baconDatsToShare/dats/meas_MID00088_FID84520_bb_caipigre_3D_Grappa3.dat';
-            useGrappaPrescan = true;            
-        case 7
-            output_dir = '/ceph/mri.meduniwien.ac.at/projects/radiology/fmri/data/bbachrata/analysis/SMM/test/2D/';
-            kspace_aliased_path = '/ceph/mri.meduniwien.ac.at/projects/radiology/acqdata/data/dats/SMURF_manuscript_minPha11p76_rawDataToShare/knee_GRE_V11_2DSMURF.dat';
-            kspace_prescan_path = '/ceph/mri.meduniwien.ac.at/projects/radiology/acqdata/data/dats/SMURF_manuscript_minPha11p76_rawDataToShare/knee_GRE_V11_2Dprescan.dat';
-            orient = 1; 
-            PE_dir = 2; 
+
     end     
     
     
@@ -127,7 +114,7 @@ for scan = 7
             % Get the ACS data for GRAPPA unaliasing - the fat and water are overlapping, but shifted relative to each other by CAIPIRINHA 
             if (params.iPat ~= 1)
                 if (~params.is2D)
-                    kspace_prescan = FFTOfMRIData_bb(kspace_prescan,0,[4],1);
+                    kspace_prescan = FFTOfMRIData(kspace_prescan,0,[4],1);
                 end
                 kspace_ACS_grappa = zeros(dims(1),dims(2),dims(3),dims(4)/2);
                 for iSlice = 1:(dims(4)/2)
@@ -135,7 +122,7 @@ for scan = 7
                     kspace_ACS_grappa(:,:,:,iSlice) = kspace_prescan(:,:,:,iSlice) + kspace_prescan(:,:,:,iAliased);
                 end
                 if (~params.is2D)
-                    kspace_ACS_grappa = FFTOfMRIData_bb(kspace_ACS_grappa,0,[4],0);
+                    kspace_ACS_grappa = FFTOfMRIData(kspace_ACS_grappa,0,[4],0);
                 end
             end
             clear kspace_prescan
@@ -163,7 +150,7 @@ for scan = 7
             
             %% GRAPPA unaliasing 
             if (params.iPat ~= 1)
-                [kspace_aliased,weights_grappa,kernelsize,SrcRelativeTarg] = opencaipirinha_MRSI_bb(kspace_aliased, kspace_ACS_grappa, params.is2D, expandPattern);      
+                [kspace_aliased,weights_grappa,kernelsize,SrcRelativeTarg] = opencaipirinha_MRSI(kspace_aliased, kspace_ACS_grappa, params.is2D, expandPattern);      
                 clear kspace_ACS_grappa
             
                 % Save grappa unaliased image
@@ -174,7 +161,7 @@ for scan = 7
             
             
             %% Water-fat CAIPIRINHA unaliasing 
-            [kspace_water, kspace_fat, weights_caipi] = openslicecaipirinha_MRSI_bb(kspace_aliased, kspace_ACS_caipi, params.is2D, FWSliceAliasingPattern);             
+            [kspace_water, kspace_fat, weights_caipi] = openslicecaipirinha_MRSI(kspace_aliased, kspace_ACS_caipi, params.is2D, FWSliceAliasingPattern);             
             clear kspace_aliased
             
             % Reverse CAIPI shift of fat
@@ -224,7 +211,7 @@ for scan = 7
 
             %% GRAPPA unaliasing
             if (params.iPat ~= 1)
-                kspace_aliased = opencaipirinha_MRSI_bb(kspace_aliased, weights_grappa, params.is2D, expandPattern, kernelsize, SrcRelativeTarg);
+                kspace_aliased = opencaipirinha_MRSI(kspace_aliased, weights_grappa, params.is2D, expandPattern, kernelsize, SrcRelativeTarg);
                 
                 % Save grappa unaliased image
                 if (save_steps)
@@ -234,7 +221,7 @@ for scan = 7
             
             
             %% Water-fat CAIPIRINHA unaliasing
-            [kspace_water, kspace_fat] = openslicecaipirinha_MRSI_bb(kspace_aliased, weights_caipi, params.is2D, FWSliceAliasingPattern); 
+            [kspace_water, kspace_fat] = openslicecaipirinha_MRSI(kspace_aliased, weights_caipi, params.is2D, FWSliceAliasingPattern); 
             clear kspace_aliased
             
             % Reverse CAIPI shift of fat
@@ -253,17 +240,7 @@ for scan = 7
         end
     
     end
-    
-    
-%     %% Merge the separate echo images to one multi-echo image (4th dimension)
-%     if (nEchoes > 1)
-%         mergeEchoesOfNifti(output_dir, 'water', iEcho, deleteSeparateEchoes);
-%         mergeEchoesOfNifti(output_dir, 'fat', iEcho, deleteSeparateEchoes);
-%         if(computeFatFraction)
-%             mergeEchoesOfNifti(output_dir, 'FF', iEcho, deleteSeparateEchoes);
-%         end
-%     end
-    
+     
 end
 
 

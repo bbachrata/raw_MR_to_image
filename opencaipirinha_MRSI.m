@@ -1,4 +1,4 @@
-function [OutData,weights,kernelsize,SrcRelativeTarg]=opencaipirinha_MRSI_bb(OutData, ACS_or_weights, is2D, UndersamplingCell, kernelsize, SrcRelativeTarg, quiet_flag, precision, MinKernelSrcPts) 
+function [OutData,weights,kernelsize,SrcRelativeTarg]=opencaipirinha_MRSI(OutData, ACS_or_weights, is2D, UndersamplingCell, kernelsize, SrcRelativeTarg, quiet_flag, precision, MinKernelSrcPts) 
 % 
 % opencaipirinha_MRSI Reconstruct MRSI and MRI Data Undersampled With caipirinha Patterns
 % 
@@ -144,7 +144,7 @@ ElementaryCellLinearIndex = find(~UndersamplingCell);
 KernelCorrespondence = zeros([1 nKernels]);
 
 if (is2D == 0)
-    OutData = FFTOfMRIData_bb(OutData,0,[4],1);
+    OutData = FFTOfMRIData(OutData,0,[4],1);
 end
     
 
@@ -158,7 +158,7 @@ if(~exist('weights','var'))
 
     % BB added
     if (is2D == 0)
-        ACS = FFTOfMRIData_bb(ACS,0,[4],1);
+        ACS = FFTOfMRIData(ACS,0,[4],1);
     end
 
     % Fancy Text Message
@@ -461,7 +461,7 @@ OutData = Reco_dummy(:,Maxkernelsize(1)+1:end-Maxkernelsize(2),Maxkernelsize(3)+
 
 
 if (is2D == 0)
-     OutData = FFTOfMRIData_bb(OutData,0,[4],0);
+     OutData = FFTOfMRIData(OutData,0,[4],0);
 end 
 
 

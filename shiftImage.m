@@ -1,5 +1,5 @@
-function kspace = correctChemicalShiftDisplacement(kspace,shift)
-% Correct for chemical shift artefct in k-space
+function kspace = shiftImage(kspace,shift)
+% Correct for chemical shift displacement artefct in k-space
 
 FoVChemShift = zeros(size(kspace,4),2);
 kspace = permute(kspace, [1,3,2,4,5]);

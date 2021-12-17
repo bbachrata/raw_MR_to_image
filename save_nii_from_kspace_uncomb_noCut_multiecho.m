@@ -1,9 +1,9 @@
 function save_nii_from_kspace_uncomb_noCut_multiecho(kspace, dir, name, is2D)
 
     if (is2D)
-        ima = FFTOfMRIData_bb(kspace,0,[2 3],1); 
+        ima = FFTOfMRIData(kspace,0,[2 3],1); 
     else
-        ima = FFTOfMRIData_bb(kspace,0,[2 3 4],1);
+        ima = FFTOfMRIData(kspace,0,[2 3 4],1);
     end
 
     ima = permute(ima,[2,3,4,1,5]);

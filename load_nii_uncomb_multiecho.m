@@ -24,10 +24,10 @@ function kspace = load_nii_uncomb_multiecho(dir, name, is2D)
         if (mod(size(cx,3),2) == 1)  
             cx = cx(:,:,[end,(1:end-1)],:,:); 
         end
-        kspace = FFTOfMRIData_bb(cx,0,[2 3],0);
+        kspace = FFTOfMRIData(cx,0,[2 3],0);
 
     else
-        kspace = FFTOfMRIData_bb(cx,0,[2 3 4],0); 
+        kspace = FFTOfMRIData(cx,0,[2 3 4],0); 
     end
     
     

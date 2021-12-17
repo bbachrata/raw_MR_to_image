@@ -10,21 +10,28 @@
 clear;
 close all;
 
-save_uncomb = true; % required for fat-water recombination 
+
+%%%%%  Set your path to the files %%%%%%
+your_reco_path = '';
+
+
+% Optional outputs
+save_uncomb = false;  
+
+% Set output image name
+output_name = 'image.nii';
 
 
 %% Define data paths and acquisition orientation
 for scan = 1
    
-    orient = 3; % 1-sag, 2-trans, 3-cor
-    PE_dir = 3; % 1 = HF, 2 = AP, 3 = RL
-    deleteSeparateEchoes = true;
-    output_name = 'image.nii';
+    orient = 2; % 1-sag, 2-trans, 3-cor
+    PE_dir = 2; % 1 = HF, 2 = AP, 3 = RL
 
     switch scan 
         case 1
-            output_dir = '/ceph/mri.meduniwien.ac.at/projects/radiology/fmri/data/bbachrata/analysis/SMM/p_bb_20211206_baconDatsToShare/2D_iPat2';
-            dat_file = '/ceph/mri.meduniwien.ac.at/projects/radiology/acqdata/data/BB_sorting_spot/p_bb_20211206_baconDatsToShare/dats/meas_MID00083_FID84515_bb_caipigre_2D_Grappa2.dat';
+            output_dir = fullfile(your_reco_path,'SMURF/reco/test_data_output/conventional_2D');
+            dat_file = fullfile(your_reco_path,'SMURF/reco/test_data/conventional_2D/meas_MID00723_FID59155_bb_smurftse_inPha_2D.dat');
 
     end
     
